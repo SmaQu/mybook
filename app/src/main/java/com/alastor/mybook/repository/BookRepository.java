@@ -13,7 +13,6 @@ import io.reactivex.Single;
 public class BookRepository {
 
     private static BookRepository repositoryInstance;
-    private static String apiUrl;
     private static BookRDS bookRDS;
 
     private BookRepository() {
@@ -21,7 +20,6 @@ public class BookRepository {
 
     //Only to hide apiUrl
     public static void init(String apiUrl) {
-        Log.e("TAG", "init: " );
         getInstance();
         bookRDS = new BookRDS(new BookServiceGenerator().provideRetrofit(apiUrl));
     }

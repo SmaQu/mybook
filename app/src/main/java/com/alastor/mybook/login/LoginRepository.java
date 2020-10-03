@@ -1,6 +1,8 @@
-package com.alastor.mybook.repository.api.rest;
+package com.alastor.mybook.login;
 
 import android.content.Context;
+
+import androidx.lifecycle.LifecycleObserver;
 
 import com.alastor.mybook.repository.BookRepository;
 

@@ -1,7 +1,6 @@
 package com.alastor.mybook.login;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alastor.mybook.Response;
 import com.alastor.mybook.repository.BookRepository;
-import com.alastor.mybook.repository.api.rest.LoginRepository;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.CompositeDisposable;

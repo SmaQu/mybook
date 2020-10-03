@@ -1,5 +1,7 @@
 package com.alastor.mybook.repository;
 
+import android.util.Log;
+
 import com.alastor.mybook.repository.api.model.Book;
 import com.alastor.mybook.repository.api.rest.BookRDS;
 import com.alastor.mybook.repository.api.rest.BookServiceGenerator;
@@ -11,8 +13,17 @@ import io.reactivex.Single;
 public class BookRepository {
 
     private static BookRepository repositoryInstance;
+    private static String apiUrl;
+    private static BookRDS bookRDS;
 
     private BookRepository() {
+    }
+
+    //Only to hide apiUrl
+    public static void init(String apiUrl) {
+        Log.e("TAG", "init: " );
+        getInstance();
+        bookRDS = new BookRDS(new BookServiceGenerator().provideRetrofit(apiUrl));
     }
 
     public static BookRepository getInstance() {
@@ -25,8 +36,6 @@ public class BookRepository {
         }
         return repositoryInstance;
     }
-
-    private final BookRDS bookRDS = new BookRDS(new BookServiceGenerator().provideRetrofit());
 
     public Single<String> loginUser(String username, String password) {
         return bookRDS.login(username, password);

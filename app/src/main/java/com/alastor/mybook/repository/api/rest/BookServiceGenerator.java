@@ -8,16 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BookServiceGenerator {
 
-   
-    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-    private static Retrofit.Builder builder =
-            new Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
-
-    public BookService provideRetrofit() {
-        return new Retrofit.Builder().baseUrl(API_BASE_URL)
+    public BookService provideRetrofit(String apiUrl) {
+        return new Retrofit.Builder().baseUrl(apiUrl)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

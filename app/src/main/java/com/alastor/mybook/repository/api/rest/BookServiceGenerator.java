@@ -9,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BookServiceGenerator {
 
 
-
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
     private static Retrofit.Builder builder =

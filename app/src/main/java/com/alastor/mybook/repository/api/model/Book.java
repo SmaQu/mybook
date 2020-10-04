@@ -6,6 +6,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Book {
 
+    public Book(String title, String description, String coverUrl) {
+        this.title = title;
+        this.description = description;
+        this.coverUrl = coverUrl;
+    }
+
     @SerializedName("Id")
     String id;
 
@@ -33,4 +39,6 @@ public class Book {
     public String getCoverUrl() {
         return coverUrl;
     }
+
+
 }

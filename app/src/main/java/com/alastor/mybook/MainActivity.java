@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.alastor.mybook.books.BooksFragment;
 import com.alastor.mybook.login.LoginActivity;
 import com.alastor.mybook.login.LoginRepository;
 import com.alastor.mybook.login.LoginSessionController;
@@ -26,30 +27,28 @@ public class MainActivity extends AppCompatActivity implements LoginSessionContr
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final int REQUEST_CODE_LOGIN_SUCCESS = 1410;
 
-    private CompositeDisposable disposable = new CompositeDisposable();
-    private LoginSessionController loginSessionController;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loginSessionController = new LoginSessionController(this, this);
+
+        final LoginSessionController loginSessionController = new LoginSessionController(this, this);
         getLifecycle().addObserver(loginSessionController);
-        if (!loginSessionController.isSessionExpired()) {
-            requestBooks();
+        if (savedInstanceState == null && !loginSessionController.isSessionExpired()) {
+            addBooksFragment();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        requestBooks();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        disposable.clear();
+        final boolean mainFragmentExist = FragmentAdministrator
+                .isFragmentPresent(getSupportFragmentManager(),
+                        R.id.fragment_container,
+                        BooksFragment.class.getSimpleName());
+        if (!mainFragmentExist) {
+            addBooksFragment();
+        }
     }
 
     @Override
@@ -57,29 +56,9 @@ public class MainActivity extends AppCompatActivity implements LoginSessionContr
         startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_CODE_LOGIN_SUCCESS);
     }
 
-    private void requestBooks() {
-        BookRepository bookRepository = BookRepository.getInstance();
-        bookRepository
-                .getBooks(LoginRepository.getInstance().getNotExpiredToken(getApplicationContext()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<List<Book>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable.add(d);
-                    }
-
-                    @Override
-                    public void onSuccess(List<Book> books) {
-                        for (Book book : books) {
-                            Log.e(TAG, "onSuccess: " + book.getTitle());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError: " + e);
-                    }
-                });
+    private void addBooksFragment() {
+        FragmentAdministrator.addFragment(getSupportFragmentManager(),
+                R.id.fragment_container,
+                BooksFragment.newInstance());
     }
 }

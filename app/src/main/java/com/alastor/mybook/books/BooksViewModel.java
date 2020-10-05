@@ -65,10 +65,6 @@ public class BooksViewModel extends AndroidViewModel {
         return booksLiveData;
     }
 
-    public void requestRemoveBook(String id) {
-        removeBook(id);
-    }
-
     public LiveData<Response<String>> removeBook(String id) {
         bookRepository
                 .removeBook(loginRepository.getNotExpiredToken(getApplication().getApplicationContext()), id)

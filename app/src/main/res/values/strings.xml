@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">MyBook</string>
-    <string name="create_book">Create book</string>
+    <string name="new_book">New book</string>
 </resources>

@@ -64,7 +64,6 @@ public class CreateBookFragment extends Fragment {
                     createBookFragmentBinding.createBookFlipper.setDisplayedChild(1);
                     break;
                 case SUCCESS:
-                    Log.e("TAG", "makeRequest: " + stringResponse.data);
                     createBookFragmentBinding.createBookFlipper.setDisplayedChild(0);
                     FragmentAdministrator.popBackStack(getParentFragmentManager());
                     break;

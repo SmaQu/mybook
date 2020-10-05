@@ -1,7 +1,6 @@
 package com.alastor.mybook.books;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +38,7 @@ public class BooksFragment extends Fragment {
         booksFragmentBinding.booksRecycleView.setAdapter(booksAdapter);
         final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(getSwipeToDeleteCallback());
         itemTouchHelper.attachToRecyclerView(booksFragmentBinding.booksRecycleView);
+        booksFragmentBinding.booksRecycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         return booksFragmentBinding.getRoot();
     }
 
@@ -45,34 +46,41 @@ public class BooksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         booksViewModel = new ViewModelProvider(this).get(BooksViewModel.class);
-
-        booksViewModel.getBooks().observe(getViewLifecycleOwner(), listResponse -> {
-            if (listResponse == null) {
-                return;
-            }
-            switch (listResponse.status) {
-                case LOADING:
-                    booksFragmentBinding.booksFlipper.setDisplayedChild(0);
-                    break;
-                case SUCCESS:
-                    booksAdapter.setListOfBooks(listResponse.data);
-                    booksFragmentBinding.booksFlipper.setDisplayedChild(1);
-                    break;
-                case ERROR:
-                    break;
-            }
-        });
+        requestBooks();
 
         booksFragmentBinding.fab.setOnClickListener(v ->
                 FragmentAdministrator.replaceFragment(getParentFragmentManager(),
                         R.id.fragment_container,
                         CreateBookFragment.newInstance()));
+
+        booksFragmentBinding.swipeRefresh.setOnRefreshListener(this::requestBooks);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         booksFragmentBinding = null;
+    }
+
+    private void requestBooks() {
+        booksViewModel.getBooks().observe(getViewLifecycleOwner(), listResponse -> {
+            if (listResponse == null) {
+                return;
+            }
+            switch (listResponse.status) {
+                case LOADING:
+                    if (!booksFragmentBinding.swipeRefresh.isRefreshing()) {
+                        booksFragmentBinding.swipeRefresh.setRefreshing(true);
+                    }
+                    break;
+                case SUCCESS:
+                    booksAdapter.setListOfBooks(listResponse.data);
+                    booksFragmentBinding.swipeRefresh.setRefreshing(false);
+                    break;
+                case ERROR:
+                    break;
+            }
+        });
     }
 
     private SwipeToDeleteCallback getSwipeToDeleteCallback() {
@@ -86,9 +94,11 @@ public class BooksFragment extends Fragment {
                     }
                     switch (stringResponse.status) {
                         case LOADING:
+                            booksFragmentBinding.swipeRefresh.setRefreshing(true);
                             break;
                         case SUCCESS:
                             booksAdapter.removeItem(id);
+                            booksFragmentBinding.swipeRefresh.setRefreshing(false);
                             break;
                         case ERROR:
                             break;

@@ -35,6 +35,10 @@ public class BooksViewModel extends AndroidViewModel {
         super(application);
     }
 
+    public void requestBooks() {
+        getBooks();
+    }
+
     public LiveData<Response<List<Book>>> getBooks() {
         bookRepository
                 .getBooks(loginRepository.getNotExpiredToken(getApplication().getApplicationContext()))
@@ -54,11 +58,15 @@ public class BooksViewModel extends AndroidViewModel {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("TAG", "onError: " + e);
+                        booksLiveData.setValue(Response.error(e));
                     }
                 });
 
         return booksLiveData;
+    }
+
+    public void requestRemoveBook(String id) {
+        removeBook(id);
     }
 
     public LiveData<Response<String>> removeBook(String id) {
@@ -75,12 +83,14 @@ public class BooksViewModel extends AndroidViewModel {
 
                     @Override
                     public void onSuccess(String s) {
-                        removeBookLiveData.setValue(Response.success(s));
+                        removeBookLiveData.setValue(Response.error(null));
+
+//                        removeBookLiveData.setValue(Response.success(s));
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("TAG", "onError: " + e);
+                        removeBookLiveData.setValue(Response.error(e));
                     }
                 });
         return removeBookLiveData;

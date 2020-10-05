@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.alastor.mybook.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import static com.alastor.mybook.MainActivity.REQUEST_CODE_LOGIN_SUCCESS;
 
@@ -27,7 +28,6 @@ public class LoginActivity extends AppCompatActivity {
                         case LOADING:
                             break;
                         case SUCCESS:
-                            Log.e("TAG", "onCreate: " );
                             setResult(REQUEST_CODE_LOGIN_SUCCESS);
                             finish();
                             break;

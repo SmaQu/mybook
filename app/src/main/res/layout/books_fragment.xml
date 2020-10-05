@@ -20,6 +20,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/recycler_place_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/error_cannot_get_books"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_h2"
+            android:visibility="gone"
+            app:drawableTopCompat="@drawable/ic_baseline_book_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
@@ -33,4 +48,6 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

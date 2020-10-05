@@ -53,17 +53,31 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHol
     }
 
     public void removeItem(String id) {
-        for (int index = 0; index < listOfBooks.size(); index++) {
-            if (listOfBooks.get(index).getId().equals(id)) {
-                listOfBooks.remove(index);
-                notifyItemRemoved(index);
-                return;
-            }
+        final int position = getPositionOf(id);
+        if (position != -1) {
+            listOfBooks.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void refreshItem(String id) {
+        final int position = getPositionOf(id);
+        if (position != -1) {
+            notifyItemChanged(position);
         }
     }
 
     public void setBooksListener(BooksListener booksListener) {
         this.booksListener = booksListener;
+    }
+
+    private int getPositionOf(String id) {
+        for (int index = 0; index < listOfBooks.size(); index++) {
+            if (listOfBooks.get(index).getId().equals(id)) {
+                return index;
+            }
+        }
+        return -1;
     }
 
     public interface BooksListener {

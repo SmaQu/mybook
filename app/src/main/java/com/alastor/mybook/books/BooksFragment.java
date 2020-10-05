@@ -18,6 +18,7 @@ import com.alastor.mybook.R;
 import com.alastor.mybook.books.bookcreator.CreateBookFragment;
 import com.alastor.mybook.books.singledetailbook.InDetailBookFragment;
 import com.alastor.mybook.databinding.BooksFragmentBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 public class BooksFragment extends Fragment {
 
@@ -72,12 +73,22 @@ public class BooksFragment extends Fragment {
                     if (!booksFragmentBinding.swipeRefresh.isRefreshing()) {
                         booksFragmentBinding.swipeRefresh.setRefreshing(true);
                     }
+                    booksFragmentBinding.booksRecycleView.setVisibility(View.VISIBLE);
+                    booksFragmentBinding.recyclerPlaceHolder.setVisibility(View.GONE);
                     break;
                 case SUCCESS:
                     booksAdapter.setListOfBooks(listResponse.data);
                     booksFragmentBinding.swipeRefresh.setRefreshing(false);
                     break;
                 case ERROR:
+                    booksFragmentBinding.booksRecycleView.setVisibility(View.GONE);
+                    booksFragmentBinding.recyclerPlaceHolder.setVisibility(View.VISIBLE);
+                    booksFragmentBinding.swipeRefresh.setRefreshing(false);
+                    Snackbar.make(requireView(), R.string.error_cannot_get_books, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.action_retry, v -> {
+                                booksViewModel.requestBooks();
+                            })
+                            .show();
                     break;
             }
         });
@@ -101,6 +112,10 @@ public class BooksFragment extends Fragment {
                             booksFragmentBinding.swipeRefresh.setRefreshing(false);
                             break;
                         case ERROR:
+                            booksAdapter.refreshItem(id);
+                            booksFragmentBinding.swipeRefresh.setRefreshing(false);
+                            Snackbar.make(requireView(), R.string.error_cannot_delete_book, Snackbar.LENGTH_LONG)
+                                    .show();
                             break;
                     }
                 });
@@ -109,11 +124,8 @@ public class BooksFragment extends Fragment {
     }
 
     private BooksAdapter.BooksListener getBooksListener() {
-        return id -> {
-            FragmentAdministrator.replaceFragment(getParentFragmentManager(),
-                    R.id.fragment_container,
-                    InDetailBookFragment.newInstance(id));
-        };
+        return id -> FragmentAdministrator.replaceFragment(getParentFragmentManager(),
+                R.id.fragment_container,
+                InDetailBookFragment.newInstance(id));
     }
-
 }

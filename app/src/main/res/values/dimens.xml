@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="default_dimen">12dp</dimen>
+
+    <dimen name="text_h2">60sp</dimen>
+    <dimen name="text_h5">24sp</dimen>
+    <dimen name="text_b1">16sp</dimen>
+
     <dimen name="custom_book_item">192dp</dimen>
 </resources>

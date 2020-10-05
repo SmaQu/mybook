@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">MyBook</string>
     <string name="new_book">New book</string>
+    <string name="label_book_title">Book title*</string>
+    <string name="label_description">Description*</string>
+    <string name="label_cover_url">Cover link</string>
+    <string name="label_required">*Required</string>
+    <string name="label_book_cover">Book cover photo</string>
 </resources>

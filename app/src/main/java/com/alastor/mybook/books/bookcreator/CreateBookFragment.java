@@ -1,7 +1,6 @@
 package com.alastor.mybook.books.bookcreator;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.alastor.mybook.FragmentAdministrator;
+import com.alastor.mybook.R;
 import com.alastor.mybook.databinding.CreateBookFragmentBinding;
 import com.alastor.mybook.repository.api.model.Book;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class CreateBookFragment extends Fragment {
 
@@ -36,8 +37,10 @@ public class CreateBookFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         createBookViewModel = new ViewModelProvider(this).get(CreateBookViewModel.class);
         createBookFragmentBinding.save.setOnClickListener(v -> {
-            final Book book = createNewBook();
-            makeRequest(book);
+            final Book book = createBookIfValidated();
+            if (book != null) {
+                makeRequest(book);
+            }
         });
     }
 
@@ -47,11 +50,36 @@ public class CreateBookFragment extends Fragment {
         createBookFragmentBinding = null;
     }
 
-    private Book createNewBook() {
-        final String title = createBookFragmentBinding.title.getText().toString();
-        final String description = createBookFragmentBinding.description.getText().toString();
-        final String coverUrlText = createBookFragmentBinding.coverUrl.getText().toString();
-        return new Book(title, description, coverUrlText);
+    private Book createBookIfValidated() {
+        if (validateViews()) {
+            final String title = createBookFragmentBinding.titleText
+                    .getText().toString();
+            final String description = createBookFragmentBinding.descriptionText
+                    .getText().toString();
+            final String coverUrlText = createBookFragmentBinding.coverUrlText
+                    .getText().toString();
+            return new Book(title, description, coverUrlText);
+        }
+
+        return null;
+    }
+
+    private boolean validateViews() {
+        boolean valid = true;
+        if (createBookFragmentBinding.titleText.getText().toString().isEmpty()) {
+            createBookFragmentBinding.title.setError(getString(R.string.label_required));
+            valid = false;
+        } else {
+            createBookFragmentBinding.title.setError(null);
+        }
+
+        if (createBookFragmentBinding.descriptionText.getText().toString().isEmpty()) {
+            createBookFragmentBinding.description.setError(getString(R.string.label_required));
+            valid = false;
+        } else {
+            createBookFragmentBinding.description.setError(null);
+        }
+        return valid;
     }
 
     private void makeRequest(Book book) {

@@ -83,8 +83,8 @@ public class BooksFragment extends Fragment {
         });
     }
 
-    private SwipeToDeleteCallback getSwipeToDeleteCallback() {
-        return new SwipeToDeleteCallback(requireContext()) {
+    private SwipeToDeleteGridViewCallback getSwipeToDeleteCallback() {
+        return new SwipeToDeleteGridViewCallback() {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 final String id = booksAdapter.getBookIdAtPosition(viewHolder.getAdapterPosition());

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/custom_book_item"
-    android:layout_margin="12dp">
+    android:layout_margin="@dimen/default_dimen">
 
     <TextView
         android:id="@+id/title"
@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:textColor="@android:color/black"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_h5"
         app:drawableTopCompat="@drawable/ic_baseline_book_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

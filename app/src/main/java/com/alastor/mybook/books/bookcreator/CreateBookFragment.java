@@ -1,9 +1,11 @@
 package com.alastor.mybook.books.bookcreator;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +16,7 @@ import com.alastor.mybook.FragmentAdministrator;
 import com.alastor.mybook.R;
 import com.alastor.mybook.databinding.CreateBookFragmentBinding;
 import com.alastor.mybook.repository.api.model.Book;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.snackbar.Snackbar;
 
 public class CreateBookFragment extends Fragment {
 
@@ -89,6 +91,7 @@ public class CreateBookFragment extends Fragment {
             }
             switch (stringResponse.status) {
                 case LOADING:
+                    hideKeyboard(requireActivity());
                     createBookFragmentBinding.createBookFlipper.setDisplayedChild(1);
                     break;
                 case SUCCESS:
@@ -96,8 +99,22 @@ public class CreateBookFragment extends Fragment {
                     FragmentAdministrator.popBackStack(getParentFragmentManager());
                     break;
                 case ERROR:
+                    createBookFragmentBinding.createBookFlipper.setDisplayedChild(0);
+                    Snackbar.make(requireView(), R.string.error_cannot_create_book, Snackbar.LENGTH_LONG)
+                            .show();
                     break;
             }
         });
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

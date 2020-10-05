@@ -7,5 +7,6 @@
     <string name="label_required">*Required</string>
     <string name="label_book_cover">Book cover photo</string>
     <string name="error_cannot_get_book">Can\'t get book.</string>
+    <string name="error_cannot_create_book">Can\'t create book.</string>
     <string name="action_retry">Retry</string>
 </resources>

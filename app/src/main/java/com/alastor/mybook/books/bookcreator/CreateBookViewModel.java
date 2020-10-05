@@ -50,7 +50,7 @@ public class CreateBookViewModel extends AndroidViewModel {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("TAG", "onError: " + e);
+                        createBookLiveData.setValue(Response.error(e));
                     }
                 });
 

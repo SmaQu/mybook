@@ -83,9 +83,7 @@ public class BooksViewModel extends AndroidViewModel {
 
                     @Override
                     public void onSuccess(String s) {
-                        removeBookLiveData.setValue(Response.error(null));
-
-//                        removeBookLiveData.setValue(Response.success(s));
+                        removeBookLiveData.setValue(Response.success(s));
                     }
 
                     @Override

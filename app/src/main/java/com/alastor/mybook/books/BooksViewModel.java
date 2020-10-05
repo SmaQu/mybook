@@ -39,16 +39,17 @@ public class BooksViewModel extends AndroidViewModel {
         bookRepository
                 .getBooks(loginRepository.getNotExpiredToken(getApplication().getApplicationContext()))
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<Book>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposable.add(d);
-                        booksLiveData.postValue(Response.loading());
+                        booksLiveData.setValue(Response.loading());
                     }
 
                     @Override
                     public void onSuccess(List<Book> books) {
-                        booksLiveData.postValue(Response.success(books));
+                        booksLiveData.setValue(Response.success(books));
                     }
 
                     @Override
@@ -64,16 +65,17 @@ public class BooksViewModel extends AndroidViewModel {
         bookRepository
                 .removeBook(loginRepository.getNotExpiredToken(getApplication().getApplicationContext()), id)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposable.add(d);
-                        removeBookLiveData.postValue(Response.loading());
+                        removeBookLiveData.setValue(Response.loading());
                     }
 
                     @Override
                     public void onSuccess(String s) {
-                        removeBookLiveData.postValue(Response.success(s));
+                        removeBookLiveData.setValue(Response.success(s));
                     }
 
                     @Override

@@ -19,6 +19,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -36,15 +37,20 @@ public class InDetailBookViewModel extends AndroidViewModel {
         super(application);
     }
 
+    public void requestBook(String id) {
+        getBook(id);
+    }
+
     public LiveData<Response<Book>> getBook(String id) {
         bookRepository
                 .getBook(loginRepository.getNotExpiredToken(getApplication().getApplicationContext()), id)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<Book>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposable.add(d);
-                        bookLiveData.postValue(Response.loading());
+                        bookLiveData.setValue(Response.loading());
                     }
 
                     @Override
@@ -55,7 +61,7 @@ public class InDetailBookViewModel extends AndroidViewModel {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("TAG", "onError: " + e);
+                        bookLiveData.setValue(Response.error(e));
                     }
                 });
 
@@ -73,12 +79,12 @@ public class InDetailBookViewModel extends AndroidViewModel {
                 .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        bookCoverLiveData.postValue(Response.success(resource));
+                        bookCoverLiveData.setValue(Response.success(resource));
                     }
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
-                        bookCoverLiveData.postValue(Response.error(null));
+                        bookCoverLiveData.setValue(Response.error(null));
                     }
                 });
 

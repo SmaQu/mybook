@@ -14,6 +14,7 @@ import com.alastor.mybook.repository.BookRepository;
 import com.alastor.mybook.repository.api.model.Book;
 
 import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -34,16 +35,17 @@ public class CreateBookViewModel extends AndroidViewModel {
         bookRepository
                 .createBook(loginRepository.getNotExpiredToken(getApplication().getApplicationContext()), book)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposable.add(d);
-                        createBookLiveData.postValue(Response.loading());
+                        createBookLiveData.setValue(Response.loading());
                     }
 
                     @Override
                     public void onSuccess(String s) {
-                        createBookLiveData.postValue(Response.success(s));
+                        createBookLiveData.setValue(Response.success(s));
                     }
 
                     @Override

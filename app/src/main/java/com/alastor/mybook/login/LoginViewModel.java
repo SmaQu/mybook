@@ -11,6 +11,7 @@ import com.alastor.mybook.Response;
 import com.alastor.mybook.repository.BookRepository;
 
 import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -33,26 +34,27 @@ public class LoginViewModel extends AndroidViewModel {
         if (notExpiredToken.isEmpty()) {
             bookRepository.loginUser(username, password)
                     .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new SingleObserver<String>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             disposable.add(d);
-                            loginTokenLiveData.postValue(Response.loading());
+                            loginTokenLiveData.setValue(Response.loading());
                         }
 
                         @Override
                         public void onSuccess(String s) {
                             loginRepository.setToken(getApplication().getApplicationContext(), s);
-                            loginTokenLiveData.postValue(Response.success(s));
+                            loginTokenLiveData.setValue(Response.success(s));
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            loginTokenLiveData.postValue(Response.error(e));
+                            loginTokenLiveData.setValue(Response.error(e));
                         }
                     });
         } else {
-            loginTokenLiveData.postValue(Response.success(notExpiredToken));
+            loginTokenLiveData.setValue(Response.success(notExpiredToken));
         }
 
         return loginTokenLiveData;

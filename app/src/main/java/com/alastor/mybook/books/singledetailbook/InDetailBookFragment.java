@@ -2,7 +2,6 @@ package com.alastor.mybook.books.singledetailbook;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.alastor.mybook.R;
 import com.alastor.mybook.databinding.InDetailBookFragmentBinding;
 import com.alastor.mybook.repository.api.model.Book;
+import com.google.android.material.snackbar.Snackbar;
 
 public class InDetailBookFragment extends Fragment {
 
@@ -64,7 +64,6 @@ public class InDetailBookFragment extends Fragment {
                     inDetailBookFragmentBinding.bookFlipper.setDisplayedChild(0);
                     break;
                 case SUCCESS:
-                    Log.e("TAG", "onViewCreated: ");
                     inDetailBookFragmentBinding.bookFlipper.setDisplayedChild(1);
                     final Book data = bookResponse.data;
                     if (data != null) {
@@ -72,6 +71,12 @@ public class InDetailBookFragment extends Fragment {
                     }
                     break;
                 case ERROR:
+                    inDetailBookFragmentBinding.bookFlipper.setDisplayedChild(2);
+                    Snackbar.make(requireView(), R.string.error_cannot_get_book, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.action_retry, v -> {
+                                inDetailBookViewModel.requestBook(bookId);
+                            })
+                            .show();
                     break;
             }
         });
@@ -83,12 +88,10 @@ public class InDetailBookFragment extends Fragment {
             switch (drawableResponse.status) {
                 case LOADING:
                 case ERROR:
-                    Log.e("TAG", "onViewCreated: ERROR");
                     inDetailBookFragmentBinding.cover.setImageDrawable(
                             ContextCompat.getDrawable(requireContext(), R.drawable.ic_banner_foreground));
                     break;
                 case SUCCESS:
-                    Log.e("TAG", "onViewCreated: SUCCESS");
                     inDetailBookFragmentBinding.cover.setImageDrawable(drawableResponse.data);
                     break;
             }

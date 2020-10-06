@@ -65,9 +65,9 @@ public class InDetailBookFragment extends Fragment {
                     break;
                 case SUCCESS:
                     inDetailBookFragmentBinding.bookFlipper.setDisplayedChild(1);
-                    final Book data = bookResponse.data;
-                    if (data != null) {
-                        setUpViews(data);
+                    final Book book = bookResponse.data;
+                    if (book != null) {
+                        inDetailBookFragmentBinding.setBook(book);
                     }
                     break;
                 case ERROR:
@@ -103,10 +103,4 @@ public class InDetailBookFragment extends Fragment {
         super.onDestroyView();
         inDetailBookFragmentBinding = null;
     }
-
-    private void setUpViews(Book book) {
-        inDetailBookFragmentBinding.title.setText(book.getTitle());
-        inDetailBookFragmentBinding.description.setText(book.getDescription());
-    }
-
 }
